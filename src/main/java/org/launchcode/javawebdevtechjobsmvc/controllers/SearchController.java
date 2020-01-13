@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.launchcode.javawebdevtechjobsmvc.controllers.ListController.columnChoices;
 
@@ -16,6 +17,9 @@ import static org.launchcode.javawebdevtechjobsmvc.controllers.ListController.co
 @Controller
 @RequestMapping("search")
 public class SearchController {
+
+
+
 
     @RequestMapping(value = "")
     public String search(Model model) {
@@ -27,16 +31,16 @@ public class SearchController {
     @RequestMapping(value = "results")
     public String displaySearchResults(Model model, @RequestParam String searchType, @RequestParam String searchTerm) {
         ArrayList<Job> jobs;
-        if (searchType.toLowerCase().equals("all")){
+        if (searchTerm.toLowerCase().equals("all") || searchTerm.toLowerCase().equals(" ") ){
             jobs = JobData.findByValue(searchTerm);
             model.addAttribute("title", "All Jobs");
         } else {
             jobs = JobData.findByColumnAndValue(searchType, searchTerm);
-            model.addAttribute("title", "Jobs with " + columnChoices.get(searchType) + ": " + searchTerm);
+
         }
         model.addAttribute("jobs", jobs);
-
-
+        model.addAttribute("columns", columnChoices);
+        model.addAttribute("searchType", searchType);
         return "search";
     }
 }
